@@ -1,0 +1,58 @@
+#!/bin/bash
+aur_packages=/tmp/aur_packages
+#Use same branch as host system
+branch=$(awk -F= '/Branch/ {print $2}' /etc/pacman-mirrors.conf)
+#Use same architecture as host system 
+arch=$(uname -m)
+
+aur_pkglist()
+{
+	pacman -Qqm > $aur_packages
+	echo -e "Found following aur packages:"
+	cat $aurpackages
+}
+
+build_aur_packages()
+{
+	echo -e "Now building aur packages"
+	mkdir $HOME/local-build && cd $HOME/local-build
+	for pkg in $(cat aur_packages); do
+		yaourt -G pkg
+	done
+	for pkg in $(ls -d */); do
+		buildpkg -a $arch
+	done
+}
+
+build_repo()
+{
+	#collect packages into local repo folder
+	cp -r /var/cache/manjaro-tools/pkg/$branch $HOME/local-repo
+	#cd into the repo directory and build the
+	cd $HOME/local-repo/$arch
+	repo-add local-repo.db.tar.gz *.pkg.tar.*
+}
+
+upload_repo()
+{
+	
+}
+
+add_repo()
+{
+	#add repo to /etc/pacman.conf
+}
+main()
+{
+	aur_pkglist
+	if [ $(cat aur_packages | wc -l) -gt 0]; then
+		build_aur_packages
+		build_repo
+		upload_repo
+		cat aur_packages >> $pkglist
+		add_repo
+	else 
+		echo -e "no aur packages installed, nothing to do"
+		exit
+	fi
+}
