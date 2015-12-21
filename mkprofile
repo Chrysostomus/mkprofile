@@ -1,10 +1,15 @@
 #!/bin/bash
 aur_packages=/tmp/aur_packages
 explicitly_installed=$(pacman -Qeq)
+pkglist=$HOME/manjaro-tools-iso-profiles/community/clone/Packages
+clone_profile=$HOME/manjaro-tools-iso-profiles/community/clone/
+overlay=$clone_profile/clone-overlay/
+
 
 generate_template_profile()
 {
-
+	cp -r /usr/share/manjaro-tools-iso-profiles $HOME/manjaro-tools-iso-profiles
+	cp -r $HOME/manjaro-tools-iso-profiles/minimal/net-minimal $HOME/manjaro-tools-iso-profiles/community/clone
 }
 aur_pkglist()
 {
@@ -18,7 +23,9 @@ generate_pkglist()
 
 clone_settings()
 {
-	#copy filtered dotfiles from $HOME to $overlay
+for file in $HOME/{.config,.profile,bashrc,zshrc,.conkyrc}; do
+	[ -e $HOME/$file ] && cp -r $HOME/$file 
+#cp -r $HOME/{.config,.profile,bashrc,zshrc,.conkyrc} cp -r
 	#copy /etc/pacman.conf 
 }
 
