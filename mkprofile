@@ -4,13 +4,14 @@ explicitly_installed=$(pacman -Qeq)
 pkglist=$HOME/manjaro-tools-iso-profiles/community/clone/Packages
 clone_profile=$HOME/manjaro-tools-iso-profiles/community/clone/
 overlay=$clone_profile/clone-overlay/
-
+[ $(uname -m) = i686 ] && bitness=default || bitness=multilib
 
 generate_template_profile()
 {
 	cp -r /usr/share/manjaro-tools-iso-profiles $HOME/manjaro-tools-iso-profiles
 	cp -r $HOME/manjaro-tools-iso-profiles/minimal/net-minimal $HOME/manjaro-tools-iso-profiles/community/clone
 }
+
 aur_pkglist()
 {
 	pacman -Qqm > $aur_packages
@@ -23,10 +24,15 @@ generate_pkglist()
 
 clone_settings()
 {
-for file in $HOME/{.config,.profile,bashrc,zshrc,.conkyrc}; do
-	[ -e $HOME/$file ] && cp -r $HOME/$file 
-#cp -r $HOME/{.config,.profile,bashrc,zshrc,.conkyrc} cp -r
-	#copy /etc/pacman.conf 
+for file in .config .profile .zprofile .bashrc .zshrc .conkyrc ; do
+	[ -e $HOME/$file ] && cp -r $HOME/$file $overlay/etc/skel/$file
+done
+
+#remove browser data and similar stuff
+for stuff in $files_to_remove ; do
+	[ -e $overlay/etc/skel/$stuff ] && r -rf $overlay/etc/skel/$stuff
+done
+	cp /etc/pacman.conf $clone_profile/pacman-$bitness.conf
 }
 
 prepare_system()
