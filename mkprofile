@@ -1,15 +1,19 @@
 #!/bin/bash
 aur_packages=/tmp/aur_packages
 explicitly_installed=$(pacman -Qeq)
-pkglist=$HOME/manjaro-tools-iso-profiles/community/clone/Packages
+
 clone_profile=$HOME/manjaro-tools-iso-profiles/community/clone/
 overlay=$clone_profile/clone-overlay/
+
+pkglist=$clone_profile/Packages-clone
 [ $(uname -m) = i686 ] && bitness=default || bitness=multilib
 
 generate_template_profile()
 {
 	cp -r /usr/share/manjaro-tools-iso-profiles $HOME/manjaro-tools-iso-profiles
 	cp -r $HOME/manjaro-tools-iso-profiles/minimal/net-minimal $HOME/manjaro-tools-iso-profiles/community/clone
+	rm $clone_profile/Packages-Net-minimal
+	mv $clone_profile/net-minimal-overlay $overlay
 }
 
 aur_pkglist()
