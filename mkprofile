@@ -1,5 +1,7 @@
 #!/bin/bash
 aur_packages=/tmp/aur_packages
+explicitly_installed=$(pacman -Qeq)
+
 generate_template_profile()
 {
 
@@ -11,8 +13,7 @@ aur_pkglist()
 
 generate_pkglist()
 {
-	pacman -Qeq > $explicitly_installed
-	cat $explicitly_installed | grep -v -f $aur_packages > $pkglist
+	pacman -Qeq | grep -v -f $aur_packages > $pkglist
 }
 
 clone_settings()
