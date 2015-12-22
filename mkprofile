@@ -16,13 +16,10 @@ generate_template_profile()
 	mv $clone_profile/net-minimal-overlay $overlay
 }
 
-aur_pkglist()
-{
-	pacman -Qqm > $aur_packages
-}
 
 generate_pkglist()
 {
+	pacman -Qqm > $aur_packages
 	pacman -Qeq | grep -v -f $aur_packages > $pkglist
 }
 
@@ -39,24 +36,11 @@ done
 	cp /etc/pacman.conf $clone_profile/pacman-$bitness.conf
 }
 
-prepare_system()
-{
-
-}
 main()
 {
-	prepare_system
-	mkdir clone && cd clone
 	generate_template_profile
 	generate_pkglist
 	clone_settings
-	aur_pkglist
-	if [ $(cat $aur_packages | wc -l) -gt 0]; then
-		mkrepo
-		cat $aur_packages >> $pkglist
-	else
-		echo -e "no aur packages installed, proceeding as normal"
-	fi
 	$EDITOR $profilesettings #choose kernel and other settings
 	$EDITOR $pkglist #check that right packages are there
 	$EDITOR $livecdpackages #choose your installer
