@@ -65,7 +65,6 @@ main()
 		build_aur_packages
 		build_repo
 		upload_repo
-		cat aur_packages >> $pkglist
 		add_repo
 	else 
 		echo -e "no aur packages installed, nothing to do"
