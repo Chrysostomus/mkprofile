@@ -7,9 +7,20 @@ arch=$(uname -m)
 
 aur_pkglist()
 {
-	pacman -Qqm > $aur_packages
-	echo -e "Found following aur packages:"
-	cat $aurpackages
+pacman -Qqm > $aur_packages
+#Try to sort the list to make the building process easier
+for pkg in $(cat $aur_packages); do
+   #list depencies of package and check if it is on the list of installed aur packages
+   aur_deps=$(pactree -u $pkg | grep -f /tmp/aur_packages)
+   lowest_dep=$(echo $aur_deps | tail -n 1)
+   if [ $(cat $aur_deps | wc -l) -gt 0 ]; then
+       #remove the dependent package from list
+       sed -i "/$pkg/d" /tmp/aur_packages 
+       #re-add the package to list, after last of its dependencies.
+       sed -i "/$lowest_dep/a$pkg" /tmp/aur_packages
+   fi
+done
+   
 }
 
 build_aur_packages()
