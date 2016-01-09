@@ -25,8 +25,8 @@ generate_pkglist()
 
 clone_settings()
 {
-for file in .config .profile .zprofile .bashrc .zshrc .conkyrc ; do
-	[ -e $HOME/$file ] && cp -r $HOME/$file $overlay/etc/skel/$file
+for file in $(echo $HOME/.* | xargs -n 1 | grep -v '.Xauthority' | grep -v '~') ; do
+	cp -r $file $overlay/etc/skel/$(echo $file | cut -d / -f 4)
 done
 
 #remove browser data and similar stuff
